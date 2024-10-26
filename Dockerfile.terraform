@@ -1,0 +1,5 @@
+FROM hashicorp/terraform:1.9.7
+
+WORKDIR /terraform
+
+COPY ./wizardai_aws_s3_bucket /terraform
