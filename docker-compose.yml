@@ -1,0 +1,18 @@
+services:
+  terraform:
+    build:
+      context: .
+      dockerfile: Dockerfile.terraform
+    working_dir: /terraform
+    env_file:
+      - .env
+    environment:
+      - TF_VAR_logging_bucket_name=${LOGGING_BUCKET_NAME}
+      - TF_VAR_kms_key_id=${KMS_KEY_ID}
+  gotest:
+    build:
+      context: .
+      dockerfile: Dockerfile.go
+    working_dir: /gotest
+    env_file:
+      - .env
