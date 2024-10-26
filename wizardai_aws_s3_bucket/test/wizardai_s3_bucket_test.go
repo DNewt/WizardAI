@@ -1,14 +1,14 @@
 package test
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-	"github.com/gruntwork-io/terratest/modules/random"
 )
 
 func TestWizardAIS3BucketModule(t *testing.T) {
@@ -18,7 +18,7 @@ func TestWizardAIS3BucketModule(t *testing.T) {
 	kmsKeyID := os.Getenv("KMS_KEY_ID")
 
 	if loggingBucket == "" || kmsKeyID == "" {
-		t.Fatal("Both LOGGING_BUCKET_NAME and KMS_KEY_ID env vars must be set")
+		t.Fatal("Both LOGGING_BUCKET_NAME and KMS_KEY_ID must be provided")
 	}
 
 	uniqueID := random.Random(1, 10000)
@@ -30,11 +30,11 @@ func TestWizardAIS3BucketModule(t *testing.T) {
 		TerraformDir: "../",
 
 		Vars: map[string]interface{}{
-			"bucket_name":    expectedBucketName,
-			"environment":    "development",
-			"kms_key_id":     kmsKeyID,
-			"team_name":      "WizardAIDevOps",
-			"team_email":     "devops@example.com",
+			"bucket_name":         expectedBucketName,
+			"environment":         "development",
+			"kms_key_id":          kmsKeyID,
+			"team_name":           "WizardAIDevOps",
+			"team_email":          "devops@example.com",
 			"logging_bucket_name": loggingBucket,
 		},
 
@@ -51,11 +51,11 @@ func TestWizardAIS3BucketModule(t *testing.T) {
 
 	// Validate the bucket is created
 	aws.AssertS3BucketExists(t, awsRegion, bucketName)
-	
-	// Validate the bucket has the correct tags
-    actualTags := aws.GetS3BucketTags(t, awsRegion, bucketName)
 
-    // Verify each expected tag exists in the actual tags
+	// Validate the bucket has the correct tags
+	actualTags := aws.GetS3BucketTags(t, awsRegion, bucketName)
+
+	// Verify each expected tag exists in the actual tags
 	assert.Equal(t, actualTags["Name"], bucketName)
 	assert.Equal(t, actualTags["Environment"], "development")
 	assert.Equal(t, actualTags["TeamName"], "WizardAIDevOps")
